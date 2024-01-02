@@ -110,6 +110,22 @@ hashes! {
     fnvhash_rs: seeded_wrapper(fnv::FnvHasher::with_key),
     fxhash32_rs: hashdefault_wrapper::<fxhash::FxHasher32>,
     fxhash64_rs: hashdefault_wrapper::<fxhash::FxHasher64>,
+    nthash_rs: |buf: &[u8], _seed, out: *mut c_void| unsafe {
+        // Convert the buf into a slice of ACTG characters.
+
+        let to_char = |c| b"ACGT"[c as usize & 3];
+
+        let buf: Vec<u8> = buf.iter().flat_map(|&v| {
+            [to_char(v), to_char(v >> 2), to_char(v >> 4), to_char(v >> 6)]
+        }).collect();
+
+        // nthash can't handle empty slices
+        if buf.is_empty(){
+            ptr::write(out.cast(), 1);
+            return;
+        }
+        ptr::write(out.cast(), nthash::ntf64(&buf, 0, buf.len()));
+    },
     hash_hasher_rs: hashdefault_wrapper::<hash_hasher::HashHasher>,
     highway_rs: seeded_wrapper(|seed: u32|
         highway::HighwayHasher::new(highway::Key([seed.into(), 0, 0, 0]))

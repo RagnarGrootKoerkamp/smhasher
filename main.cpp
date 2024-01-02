@@ -772,6 +772,7 @@ HashInfo g_hashes[] =
 { fnvhash_rs,           64, 0x00000000, "FNV_rs",             "Fowler-Noll-Vo hash function (crate `fnv`)", GOOD, {} },
 { fxhash32_rs,          32, 0x00000000, "FxHash32",           "FxHash (FireFox hash) with 32 bits (crate `fxhash`)", GOOD, {} },
 { fxhash64_rs,          64, 0x00000000, "FxHash64",           "FxHash (FireFox hash) with 64 bits (crate `fxhash`)", GOOD, {} },
+{ nthash_rs,            64, 0x00000000, "NtHash",             "NtHash", GOOD, {} },
 { hash_hasher_rs,       64, 0x00000000, "hash_hasher_rs",     "A hasher designed to work on already hashed or hash-like data (crate `hash_hasher`)", GOOD, {} },
 { highway_rs,           64, 0x00000000, "Highway_rs",         "An implementation of Google's HighwayHash (crate `highway`)", GOOD, {} },
 { md5_rs,              128, 0x00000000, "MD5_rs",             "MD5 algorithm (crate `md-5`)", GOOD, {} },

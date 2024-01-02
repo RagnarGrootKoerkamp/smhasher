@@ -33,6 +33,8 @@ void fxhash64_rs(const void *blob, int len, unsigned int seed, void *out);
 
 void hash_hasher_rs(const void *blob, int len, unsigned int seed, void *out);
 
+void nthash_rs (const void *blob, int len, unsigned int seed, void *out);
+
 void highway_rs(const void *blob, int len, unsigned int seed, void *out);
 
 void md5_rs(const void *blob, int len, unsigned int seed, void *out);
