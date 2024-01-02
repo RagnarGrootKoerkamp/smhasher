@@ -115,16 +115,28 @@ hashes! {
 
         let to_char = |c| b"ACGT"[c as usize & 3];
 
-        let buf: Vec<u8> = buf.iter().flat_map(|&v| {
-            [to_char(v), to_char(v >> 2), to_char(v >> 4), to_char(v >> 6)]
-        }).collect();
-
-        // nthash can't handle empty slices
-        if buf.is_empty(){
-            ptr::write(out.cast(), 1);
-            return;
+        thread_local! {
+            static BUF: std::cell::RefCell<Vec<u8>>  = std::cell::RefCell::new(Vec::new());
         }
-        ptr::write(out.cast(), nthash::ntf64(&buf, 0, buf.len()));
+
+        BUF.with(|b| {
+            let mut b = b.borrow_mut();
+            b.resize(4*buf.len(), 0);
+            for (i, &c) in buf.iter().enumerate() {
+                b[4*i] = to_char(c);
+                b[4*i+1] = to_char(c >> 2);
+                b[4*i+2] = to_char(c >> 4);
+                b[4*i+3] = to_char(c >> 6);
+            }
+
+            // nthash can't handle empty slices
+            if b.is_empty(){
+                ptr::write(out.cast(), 1);
+                return;
+            }
+            ptr::write(out.cast(), nthash::ntf64(&b, 0, b.len()));
+        });
+
     },
     hash_hasher_rs: hashdefault_wrapper::<hash_hasher::HashHasher>,
     highway_rs: seeded_wrapper(|seed: u32|
